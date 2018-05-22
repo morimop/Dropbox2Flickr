@@ -21,7 +21,9 @@ def get_path_for_camera_upload_jp():
 def transfer():
     target_folder_path = get_path_for_camera_upload_jp()
     print("target_path:" + target_folder_path)
-    for entry in dbx.files_list_folder(target_folder_path).entries:
+    entries = dbx.files_list_folder(target_folder_path).entries
+    print("entries : {0}".format(len(entries)))
+    for entry in entries :
         if isinstance(entry, dropbox.files.FileMetadata):
             print("process :" + entry.name)
             target_filepath_tmp = '/tmp/' + entry.name
