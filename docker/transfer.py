@@ -1,6 +1,7 @@
 # coding=utf-8   
 
 import os
+import traceback
 import dropbox
 dbx = dropbox.Dropbox(os.environ.get("DROPBOX_API_KEY"))
 
@@ -27,12 +28,15 @@ def transfer():
         if isinstance(entry, dropbox.files.FileMetadata):
             print("process :" + entry.name)
             target_filepath_tmp = '/tmp/' + entry.name
-            dbx.files_download_to_file(target_filepath_tmp, entry.path_lower)
-            flickr_api.upload(photo_file=target_filepath_tmp, title=entry.name)
-            dbx.files_move(
-                entry.path_lower,
-                target_folder_path + "/processed/" + entry.name,
-                autorename=True)
+            try:
+                dbx.files_download_to_file(target_filepath_tmp, entry.path_lower)
+                flickr_api.upload(photo_file=target_filepath_tmp, title=entry.name)
+                dbx.files_move(
+                    entry.path_lower,
+                    target_folder_path + "/processed/" + entry.name,
+                    autorename=True)
+            except Exception:
+                print traceback.format_exc()
             print('done')
 
 transfer()
